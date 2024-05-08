@@ -702,6 +702,13 @@ func (err Error) Error() string {
 // message.
 func parseError(data []byte, repos []repoConfig) Error {
 	var e Error
+	if len(data) == 0 {
+		return Error{
+			Kind:   "InternalError",
+			Reason: fmt.Sprintf("dnf-json output was empty"),
+		}
+	}
+
 	if err := json.Unmarshal(data, &e); err != nil {
 		// dumping the error into the Reason can get noisy, but it's good for troubleshooting
 		return Error{
